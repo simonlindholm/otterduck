@@ -1,0 +1,55 @@
+<resources>
+	<section name="game">
+		<sprite name="otter-walk-up">
+			<image file="img/otter-evil.png">
+				<grid pos="0,0" size="32,32" array="4,1" />
+			</image>
+		</sprite>
+		<sprite name="otter-walk-upleft">
+			<image file="img/otter-evil.png">
+				<grid pos="0,32" size="32,32" array="4,1" />
+			</image>
+		</sprite>
+		<sprite name="otter-walk-left">
+			<image file="img/otter-evil.png">
+				<grid pos="0,64" size="32,32" array="4,1" />
+			</image>
+		</sprite>
+		<sprite name="otter-walk-downleft">
+			<image file="img/otter-evil.png">
+				<grid pos="0,96" size="32,32" array="4,1" />
+			</image>
+		</sprite>
+		<sprite name="otter-walk-down">
+			<image file="img/otter-evil.png">
+				<grid pos="0,128" size="32,32" array="4,1" />
+			</image>
+		</sprite>
+		<sprite name="otter-walk-upright">
+			<image file="img/otter-evil.png">
+				<grid pos="0,160" size="32,32" array="4,1" />
+			</image>
+		</sprite>
+		<sprite name="otter-walk-right">
+			<image file="img/otter-evil.png">
+				<grid pos="0,192" size="32,32" array="4,1" />
+			</image>
+		</sprite>
+		<sprite name="otter-walk-downright">
+			<image file="img/otter-evil.png">
+				<grid pos="0,224" size="32,32" array="4,1" />
+			</image>
+		</sprite>
+		<sprite name="otter-water-shadow">
+			<image file="img/otter-evil.png">
+				<grid pos="0,256" size="32,32" array="4,1" />
+			</image>
+		</sprite>
+
+		<sprite name="tiles">
+			<image file="img/tiles.png">
+				<grid size="32,32" array="2,1" />
+			</image>
+		</sprite>
+	</section>
+</resources>
