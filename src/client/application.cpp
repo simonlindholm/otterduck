@@ -1,8 +1,8 @@
-#include "precomp.h"
 #include <iostream>
 #include "application.h"
 #include "framerate_counter.h"
 #include "gamestate.h"
+#include "map.h"
 #include "ui.h"
 
 const unsigned int Application::timestep = 10;

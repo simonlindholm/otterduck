@@ -1,4 +1,4 @@
-#include "precomp.h"
+#include "cl.h"
 #include "gamestate.h"
 
 GameState::Event GameState::Event::makeKeydown(int key) {
@@ -32,7 +32,11 @@ void GameState::handleEvent(Event e) {
 }
 
 void GameState::step(unsigned int delay) {
-	pl.move(delay);
+	pl.step(*this, delay);
+}
+
+void GameState::drawObjects(UI& ui) const {
+	pl.draw(*this, ui);
 }
 
 GameState::GameState(const Map& map)

@@ -1,5 +1,5 @@
-#include "precomp.h"
 #include "ui.h"
+#include "map.h"
 
 namespace{
 
@@ -10,10 +10,10 @@ Coord screenPosToTile(Coord c) {
 	return Map::posToTile(c << 8);
 }
 
-const Coord minScrollLeft = 230;
-const Coord minScrollRight = 230;
-const Coord minScrollTop = 100;
-const Coord minScrollBottom = 200;
+const Coord minScrollLeft = 245;
+const Coord minScrollRight = 245;
+const Coord minScrollTop = 115;
+const Coord minScrollBottom = 215;
 
 }
 
@@ -37,17 +37,24 @@ UI::UI(CL_ResourceManager* res, CL_DisplayWindow* win)
 }
 
 void UI::drawMapSprite(CL_Sprite& spr, Position pos) {
-	spr.draw(gc, toScreenPos(pos.x) - scrollx, toScreenPos(pos.y) - scrolly);
+	int x = toScreenPos(pos.x) - scrollx;
+	int y = toScreenPos(pos.y) - scrolly;
+	spr.draw(gc, x, y);
+}
+
+void UI::drawCenteredMapSprite(CL_Sprite& spr, Position pos) {
+	int x = toScreenPos(pos.x) - (spr.get_width() / 2) - scrollx;
+	int y = toScreenPos(pos.y) - (spr.get_height() / 2) - scrolly;
+	spr.draw(gc, x, y);
 }
 
 void UI::adjustScrolling(const Player& pl) {
-	Position pos = pl.getPosition();
-	Coord w = toScreenPos(pl.getWidth()), h = toScreenPos(pl.getHeight());
-	const Coord maxx = gc.get_width() - minScrollRight - w;
-	const Coord maxy = gc.get_height() - minScrollBottom - h;
+	Position p = pl.getPosition();
+	const Coord maxx = gc.get_width() - minScrollRight;
+	const Coord maxy = gc.get_height() - minScrollBottom;
 
-	Coord oldx = toScreenPos(pos.x) - scrollx;
-	Coord oldy = toScreenPos(pos.y) - scrolly;
+	Coord oldx = toScreenPos(p.x) - scrollx;
+	Coord oldy = toScreenPos(p.y) - scrolly;
 
 	if (oldx < minScrollLeft)
 		scrollx -= minScrollLeft - oldx;
@@ -58,6 +65,19 @@ void UI::adjustScrolling(const Player& pl) {
 		scrolly -= minScrollTop - oldy;
 	else if (oldy > maxy)
 		scrolly -= maxy - oldy;
+}
+
+void UI::drawPlayer(const Player& pl) {
+	int pose = pl.getPose();
+	if (pose == 0) otterSprite = otterLeft;
+	else if (pose == 1) otterSprite = otterRight;
+	else if (pose == 2) otterSprite = otterUpLeft;
+	else if (pose == 3) otterSprite = otterUpRight;
+	else if (pose == 4) otterSprite = otterDownLeft;
+	else if (pose == 5) otterSprite = otterDownRight;
+
+	otterSprite.update();
+	drawCenteredMapSprite(otterSprite, pl.getPosition());
 }
 
 void UI::paint(unsigned int delay, const GameState& gs) {
@@ -81,17 +101,5 @@ void UI::paint(unsigned int delay, const GameState& gs) {
 		}
 	}
 
-	tileSprite.set_frame(0);
-
-	int pose = pl.getPose();
-	if (pose == 0) otterSprite = otterLeft;
-	else if (pose == 1) otterSprite = otterRight;
-	else if (pose == 2) otterSprite = otterUpLeft;
-	else if (pose == 3) otterSprite = otterUpRight;
-	else if (pose == 4) otterSprite = otterDownLeft;
-	else if (pose == 5) otterSprite = otterDownRight;
-
-	otterSprite.update(delay);
-	Position plpos = pl.getPosition();
-	drawMapSprite(otterSprite, plpos);
+	gs.drawObjects(*this);
 }

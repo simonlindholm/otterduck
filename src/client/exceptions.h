@@ -1,5 +1,5 @@
 #pragma once
-#include "precomp.h"
+#include "cl.h"
 #include <string>
 
 class ConfigException : public CL_Exception {

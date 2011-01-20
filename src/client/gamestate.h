@@ -1,8 +1,12 @@
 #pragma once
-#include "precomp.h"
 #include <utility>
-#include "map.h"
+#include <memory>
+#include "util.h"
+#include "gameobject.h"
 #include "player.h"
+
+class UI;
+class Map;
 
 class GameState {
 	public:
@@ -24,6 +28,8 @@ class GameState {
 		const Player& getPlayer() const { return pl; }
 		const Map& getMap() const { return map; }
 
+		void drawObjects(UI& ui) const;
+
 		GameState(const Map& map);
 
 	private:
@@ -32,5 +38,6 @@ class GameState {
 		signed char xmov, ymov;
 
 		const Map& map;
+		std::vector<std::shared_ptr<GameObject>> items;
 		Player pl;
 };

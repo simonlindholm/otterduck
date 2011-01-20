@@ -1,5 +1,5 @@
 #pragma once
-#include "precomp.h"
+#include "cl.h"
 #include <vector>
 
 // This is the Program class that is called by CL_ClanApplication

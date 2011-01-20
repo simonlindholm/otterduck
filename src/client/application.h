@@ -1,5 +1,5 @@
 #pragma once
-#include "precomp.h"
+#include "cl.h"
 #include <vector>
 #include <list>
 #include "gamestate.h"

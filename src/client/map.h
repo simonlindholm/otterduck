@@ -1,5 +1,5 @@
 #pragma once
-#include "precomp.h"
+#include <vector>
 #include <string>
 #include <memory>
 #include "util.h"
@@ -19,7 +19,7 @@ class Map {
 				unsigned int image;
 
 				// Tiles can only be constructed from Map
-				Tile(unsigned int img, bool e);
+				Tile(unsigned int image, bool e);
 				Tile() = default;
 				Tile& operator=(const Tile& other) = delete;
 				Tile(const Tile& other) = delete;

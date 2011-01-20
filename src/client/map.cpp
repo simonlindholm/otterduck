@@ -1,4 +1,3 @@
-#include "precomp.h"
 #include <fstream>
 #include <sstream>
 #include "map.h"
@@ -31,8 +30,8 @@ Map::Map(const std::string& str) {
 	tileSorts[Tile::BLOCK] = std::shared_ptr<Tile>(new Tile(0, false));
 }
 
-Map::Tile::Tile(unsigned int img, bool e)
-	: empty(e), image(img)
+Map::Tile::Tile(unsigned int image, bool e)
+	: empty(e), image(image)
 {}
 
 const Map::Tile& Map::getTileAt(Position pos) const {
