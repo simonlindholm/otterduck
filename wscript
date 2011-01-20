@@ -41,7 +41,7 @@ def configure(conf):
 	conf.define('VERSION', VERSION)
 	conf.env['VERSION'] = VERSION
 	conf.write_config_header('config.h')
-	conf.env.append_unique('CXXFLAGS', ['-O2', '-g', '-std=c++0x', '-pthread', '-Wall', '-Wextra'])
+	conf.env.append_unique('CXXFLAGS', ['-O2', '-g', '-std=c++0x', '-pthread', '-Wall', '-Wextra', '-Wno-unused-parameter'])
 	conf.env.append_unique('LDFLAGS', ['-O2', '-g', '-std=c++0x', '-pthread', '-Wall', '-Wextra'])
 
 def build(bld):
