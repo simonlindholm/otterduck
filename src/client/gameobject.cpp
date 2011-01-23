@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "gameobject.h"
 
 bool GameObject::use(GameState& gs, Player& pl) {
@@ -28,3 +29,7 @@ GameObject& GameObject::operator=(const GameObject& other) {
 RawGameObject::RawGameObject(Rect rect)
 	: rect(rect)
 {}
+
+void RawGameObject::swap(RawGameObject& other) {
+	std::swap(rect, other.rect);
+}

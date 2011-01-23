@@ -9,13 +9,9 @@ int Program::main(const std::vector<CL_String>& args) {
 	try {
 		// Initialize ClanLib base components
 		CL_SetupCore setup_core;
-
 		CL_SetupDisplay setup_display;
-
 		CL_SetupGL setup_gl;
-
 		CL_SetupSound setup_sound;
-		CL_SetupMikMod setup_mikmod;
 
 		// Start the Application
 		Application app;

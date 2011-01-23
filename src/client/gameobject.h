@@ -52,4 +52,6 @@ class RawGameObject {
 
 		// Initialize the base part of a game object with a given rect.
 		RawGameObject(Rect rect);
+
+		void swap(RawGameObject& other);
 };

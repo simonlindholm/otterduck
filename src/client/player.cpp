@@ -4,24 +4,31 @@
 #include "ui.h"
 
 namespace {
-	const Coord xvelMax = 100000;
-	const Coord yvelJump = -260000;
-	const Coord yvelMax = 300000;
-	const Coord yaccGravity = 900;
-	const Coord xaccAir = 1000;
-	const Coord xaccAirResistance = 200;
-	const Coord xaccGround = 3000;
-	const Coord xaccGroundResistance = 1500;
+	const mcoord xvelMax = 100000;
+	const mcoord yvelJump = -260000;
+	const mcoord yvelMax = 300000;
+	const mcoord yaccGravity = 900;
+	const mcoord xaccAir = 1000;
+	const mcoord xaccAirResistance = 200;
+	const mcoord xaccGround = 3000;
+	const mcoord xaccGroundResistance = 1500;
 
-	const Coord playerWidth = 7400;
-	const Coord playerHeight = 7400;
+	const mcoord playerWidth = 7400;
+	const mcoord playerHeight = 7400;
 }
 
 Player::Player(const Map& map)
-	: PhysicsObject(map, Rect(20000, 30000, playerWidth, playerHeight))
-{
-	xmov = ymov = 0;
-	facing = 1;
+	: PhysicsObject(map, Rect(20000, 30000, playerWidth, playerHeight)),
+	xmov(0), ymov(0), mov(0), facing(1), dead(false)
+{}
+
+void Player::swap(Player& other) {
+	std::swap(dead, other.dead);
+	std::swap(facing, other.facing);
+	std::swap(ymov, other.ymov);
+	std::swap(xmov, other.xmov);
+	std::swap(mov, other.mov);
+	PhysicsObject::swap(other);
 }
 
 void Player::jump() {
@@ -31,9 +38,19 @@ void Player::jump() {
 	}
 }
 
-void Player::setHeld(signed char xmov, signed char ymov) {
-	this->xmov = xmov;
-	this->ymov = ymov;
+void Player::beginMove(unsigned char move) {
+	mov |= (1 << move);
+	updateMove();
+}
+
+void Player::endMove(unsigned char move) {
+	mov &= ~(1 << move);
+	updateMove();
+}
+
+void Player::updateMove() {
+	xmov = ((mov & 4)?1:0) - ((mov & 2)?1:0);
+	ymov = (mov & 1)?1:0;
 	if (xmov) facing = xmov;
 }
 
@@ -44,11 +61,11 @@ void Player::framePhysics() {
 	}
 
 	// Apply acceleration in x direction
-	Coord xacc = (ground ? xaccGround : xaccAir);
-	Coord xaccResistance = (ground ? xaccGroundResistance : xaccAirResistance);
+	mcoord xacc = (ground ? xaccGround : xaccAir);
+	mcoord xaccResistance = (ground ? xaccGroundResistance : xaccAirResistance);
 
 	xvel += xacc * xmov;
-	Coord ns = std::abs(xvel) - xaccResistance;
+	mcoord ns = std::abs(xvel) - xaccResistance;
 	if (ns < 0) ns = 0;
 	if (xvel < 0) xvel = -ns;
 	else xvel = ns;
@@ -60,8 +77,16 @@ void Player::framePhysics() {
 	if (yvel > +yvelMax) yvel = +yvelMax;
 }
 
+void Player::die() {
+	dead = true;
+
+	// Make the player continue moving as if no movement keys were held.
+	xmov = ymov = mov = 0;
+}
+
 void Player::step(GameState& gs, unsigned int delay) {
 	stepPhysics(delay);
+	if (dead) gs.playerDie();
 }
 
 void Player::draw(const GameState& gs, UI& ui) const {
@@ -75,11 +100,12 @@ Player* Player::clone() const {
 int Player::getPose() const {
 	int ret = 0;
 	ret |= (facing > 0 ? 1 : 0);
-	if (!ground) ret |= 4;
-	else if (ymov < 0) ret |= 2;
+	if (dead) ret += 6;
+	else if (!ground) ret += 4;
+	else if (ymov < 0) ret += 2;
 	return ret;
 }
 
-Position Player::getPosition() const {
+MPosition Player::getPosition() const {
 	return rect.getCenter();
 }

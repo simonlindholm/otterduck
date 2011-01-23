@@ -12,14 +12,15 @@ class Map {
 				enum {
 					EMPTY,
 					BLOCK,
+					SPIKE,
 					LAST
 				};
 
-				bool empty;
+				bool empty, deadly;
 				unsigned int image;
 
 				// Tiles can only be constructed from Map
-				Tile(unsigned int image, bool e);
+				Tile(unsigned int image, bool empty, bool deadly);
 				Tile() = default;
 				Tile& operator=(const Tile& other) = delete;
 				Tile(const Tile& other) = delete;
@@ -27,6 +28,7 @@ class Map {
 			public:
 				bool isEmpty() const { return empty; }
 				unsigned int getImage() const { return image; }
+				bool isDeadly() const { return deadly; }
 		};
 
 		Map(const std::string& fname);
@@ -34,18 +36,18 @@ class Map {
 		Map(const Map& other) = delete;
 		Map& operator=(const Map& other) = delete;
 
-		const Tile& getTileAt(Position pos) const;
+		const Tile& getTileAt(TPosition pos) const;
 
 		// Get the top-right map position of a tile position.
-		static Coord tileToPos(Coord tile);
-		static Position tileToPos(Position tile);
+		static mcoord tileToPos(tcoord tile);
+		static MPosition tileToPos(TPosition tile);
 
 		// Convert a tile position to a map position.
-		static Coord posToTile(Coord tile);
-		static Position posToTile(Position tile);
+		static tcoord posToTile(mcoord tile);
+		static TPosition posToTile(MPosition tile);
 
 	private:
-		Coord w, h;
+		tcoord w, h;
 		std::shared_ptr<Tile> tileSorts[Tile::LAST];
 		std::vector<std::vector<unsigned char>> tiles;
 

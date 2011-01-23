@@ -1,6 +1,5 @@
 #pragma once
 #include <utility>
-#include <memory>
 #include "util.h"
 #include "gameobject.h"
 #include "player.h"
@@ -10,20 +9,26 @@ class Map;
 
 class GameState {
 	public:
-		// Event struct, used for sending events to GameState
 		struct Event {
 			enum Type {
-				Keydown,
-				Keyup,
+				BeginMoveLeft,
+				EndMoveLeft,
+				BeginMoveRight,
+				EndMoveRight,
+				BeginLookUp,
+				EndLookUp,
+				Jump,
+				Restart,
 			};
-			Type type;
-			int key;
-			static Event makeKeydown(int key);
-			static Event makeKeyup(int key);
 		};
 
-		void handleEvent(Event e);
+		void handleEvent(Event::Type e);
 		void step(unsigned int delay);
+
+		void setSavedState(const GameState* state);
+
+		void playerDie();
+		bool deadPlayer() const { return dead; }
 
 		const Player& getPlayer() const { return pl; }
 		const Map& getMap() const { return map; }
@@ -31,13 +36,14 @@ class GameState {
 		void drawObjects(UI& ui) const;
 
 		GameState(const Map& map);
+		void swap(GameState& other);
+		GameState& operator=(const GameState& other);
 
 	private:
-		enum {KEY_LEFT, KEY_RIGHT, KEY_UP, KEY_DOWN, KEY_LAST};
-		bool heldKeys[KEY_LAST];
-		signed char xmov, ymov;
+		bool dead;
 
 		const Map& map;
-		std::vector<std::shared_ptr<GameObject>> items;
+		const GameState* savedState;
+		std::vector<GameObject> items;
 		Player pl;
 };

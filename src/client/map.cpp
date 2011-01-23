@@ -12,8 +12,8 @@ Map::Map(const std::string& str) {
 		fin >> w >> h;
 		tiles.assign(h, std::vector<unsigned char>(w, 0));
 		fin.ignore(1000, '\n');
-		for (Coord i = 0; i < h; ++i) {
-			for (Coord j = 0; j < w; ++j) {
+		for (tcoord i = 0; i < h; ++i) {
+			for (tcoord j = 0; j < w; ++j) {
 				char ch;
 				fin.get(ch);
 				tiles[i][j] = tileFromChar(ch);
@@ -26,15 +26,16 @@ Map::Map(const std::string& str) {
 	}
 
 	// Construct the different kinds of tiles
-	tileSorts[Tile::EMPTY] = std::shared_ptr<Tile>(new Tile(1, true));
-	tileSorts[Tile::BLOCK] = std::shared_ptr<Tile>(new Tile(0, false));
+	tileSorts[Tile::EMPTY] = std::shared_ptr<Tile>(new Tile(1, true, false));
+	tileSorts[Tile::BLOCK] = std::shared_ptr<Tile>(new Tile(0, false, false));
+	tileSorts[Tile::SPIKE] = std::shared_ptr<Tile>(new Tile(2, true, true));
 }
 
-Map::Tile::Tile(unsigned int image, bool e)
-	: empty(e), image(image)
+Map::Tile::Tile(unsigned int image, bool empty, bool deadly)
+	: empty(empty), deadly(deadly), image(image)
 {}
 
-const Map::Tile& Map::getTileAt(Position pos) const {
+const Map::Tile& Map::getTileAt(TPosition pos) const {
 	if (pos.x < 0 || pos.x >= w || pos.y < 0 || pos.y >= h) return *tileSorts[Tile::EMPTY];
 	return *tileSorts[tiles[pos.y][pos.x]];
 }
@@ -43,24 +44,23 @@ unsigned char Map::tileFromChar(char ch) {
 	switch (ch) {
 		case ' ': return Tile::EMPTY;
 		case 'X': return Tile::BLOCK;
+		case '^': return Tile::SPIKE;
 	}
 	std::ostringstream oss;
 	oss << "Invalid map: Invalid character '" << ch << "'.";
 	throw ConfigException(oss.str());
 }
 
-Coord Map::tileToPos(Coord tile) {
+mcoord Map::tileToPos(tcoord tile) {
 	return tile << 13;
 }
-
-Position Map::tileToPos(Position p) {
-	return Position(tileToPos(p.x), tileToPos(p.y));
+MPosition Map::tileToPos(TPosition pos) {
+	return MPosition(tileToPos(pos.x), tileToPos(pos.y));
 }
 
-Coord Map::posToTile(Coord tile) {
+tcoord Map::posToTile(mcoord tile) {
 	return tile >> 13;
 }
-
-Position Map::posToTile(Position p) {
-	return Position(posToTile(p.x), posToTile(p.y));
+TPosition Map::posToTile(MPosition pos) {
+	return TPosition(posToTile(pos.x), posToTile(pos.y));
 }

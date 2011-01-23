@@ -1,17 +1,23 @@
 #pragma once
 
-typedef long Coord;
+typedef long mcoord;
+struct MPosition {
+	mcoord x, y;
+	MPosition(mcoord x, mcoord y) : x(x), y(y) {}
+	MPosition() {}
+};
 
-struct Position {
-	Coord x, y;
-	Position(Coord x, Coord y) : x(x), y(y) {}
-	Position() {}
+typedef long tcoord;
+struct TPosition {
+	tcoord x, y;
+	TPosition(tcoord x, tcoord y) : x(x), y(y) {}
+	TPosition() {}
 };
 
 struct Rect {
-	Position p;
-	Coord w, h;
-	Rect(Coord x, Coord y, Coord w, Coord h) : p(x,y), w(w), h(h) {}
+	MPosition p;
+	mcoord w, h;
+	Rect(mcoord x, mcoord y, mcoord w, mcoord h) : p(x,y), w(w), h(h) {}
 	Rect() {}
-	Position getCenter() const { return Position(p.x + w/2, p.y + h/2); }
+	MPosition getCenter() const { return MPosition(p.x + w/2, p.y + h/2); }
 };

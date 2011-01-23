@@ -1,3 +1,5 @@
+#include <algorithm>
+#include <cassert>
 #include "physicsobject.h"
 #include "map.h"
 
@@ -9,6 +11,18 @@ PhysicsObject::PhysicsObject(const Map& map, Rect rect)
 	xvelRem = yvelRem = 0;
 	xtr = getTileRange(rect.p.x, rect.w);
 	ytr = getTileRange(rect.p.y, rect.h);
+}
+
+void PhysicsObject::swap(PhysicsObject& other) {
+	std::swap(ground, other.ground);
+	std::swap(xvel, other.xvel);
+	std::swap(yvel, other.yvel);
+	assert(&map == &other.map);
+	std::swap(xvelRem, other.xvelRem);
+	std::swap(yvelRem, other.yvelRem);
+	std::swap(xtr, other.xtr);
+	std::swap(ytr, other.ytr);
+	RawGameObject::swap(other);
 }
 
 void PhysicsObject::stepPhysics(unsigned int delay) {
@@ -34,6 +48,8 @@ void PhysicsObject::stepPhysics(unsigned int delay) {
 
 	for (unsigned int ts = 0; ts < delay; ++ts) {
 		this->framePhysics();
+
+		bool changedTile = false;
 
 		// Move the object in the x direction. The x velocity per 1024ms is
 		// converted (by something reassembling a simple division) to an
@@ -67,11 +83,14 @@ void PhysicsObject::stepPhysics(unsigned int delay) {
 				// any movement in x direction.
 				xvel = 0;
 			}
-			else if (ground) {
-				// Find out if the object has left the ground.
-				if (!calculateGround()) {
-					ground = false;
-					yvel = 0;
+			else {
+				changedTile = true;
+				if (ground) {
+					// Find out if the object has left the ground.
+					if (!calculateGround()) {
+						ground = false;
+						yvel = 0;
+					}
 				}
 			}
 		}
@@ -81,29 +100,47 @@ void PhysicsObject::stepPhysics(unsigned int delay) {
 			rect.p.y += velPerMs(yvel, &yvelRem);
 			ytr = getTileRange(rect.p.y, rect.h);
 
-			if (ytr != oldYtr && invalidPos()) {
-				if (ytr.c1 < oldYtr.c1) {
-					rect.p.y = Map::tileToPos(oldYtr.c1);
+			if (ytr != oldYtr) {
+				if (invalidPos()) {
+					if (ytr.c1 < oldYtr.c1) {
+						rect.p.y = Map::tileToPos(oldYtr.c1);
+					}
+					else {
+						rect.p.y = Map::tileToPos(ytr.c2) - rect.h;
+					}
+					ytr = getTileRange(rect.p.y, rect.h);
+
+					// If the object was moving downwards and hit something, it
+					// must have been the ground, so set the ground flag.
+					if (yvel > 0) ground = true;
+
+					yvel = 0;
 				}
 				else {
-					rect.p.y = Map::tileToPos(ytr.c2) - rect.h;
+					changedTile = true;
 				}
-				ytr = getTileRange(rect.p.y, rect.h);
-
-				// If the object was moving downwards and hit something, it
-				// must have been the ground, so set the ground flag.
-				if (yvel > 0) ground = true;
-
-				yvel = 0;
 			}
+		}
+		if (changedTile) {
+			// Perform checks against deadly tiles
+			bool dead = false;
+			for (tcoord x = xtr.c1; x <= xtr.c2; ++x) {
+				for (tcoord y = ytr.c1; y <= ytr.c2; ++y) {
+					if (map.getTileAt(TPosition(x,y)).isDeadly()) {
+						dead = true;
+						break;
+					}
+				}
+			}
+			if (dead) this->die();
 		}
 	}
 }
 
-Coord PhysicsObject::velPerMs(Coord vel, Coord* rem) {
+mcoord PhysicsObject::velPerMs(mcoord vel, mcoord* rem) {
 	const int div = 1024;
 	*rem += vel;
-	Coord nrem = *rem;
+	mcoord nrem = *rem;
 	*rem &= (div-1);
 
 	// Round 'nrem' down to the nearest multiple of 'div' to avoid
@@ -114,23 +151,23 @@ Coord PhysicsObject::velPerMs(Coord vel, Coord* rem) {
 }
 
 bool PhysicsObject::calculateGround() const {
-	Coord y = ytr.c2 + 1;
-	for (Coord x = xtr.c1; x <= xtr.c2; ++x) {
-		if (!map.getTileAt(Position(x, y)).isEmpty()) return true;
+	tcoord y = ytr.c2 + 1;
+	for (tcoord x = xtr.c1; x <= xtr.c2; ++x) {
+		if (!map.getTileAt(TPosition(x, y)).isEmpty()) return true;
 	}
 	return false;
 }
 
 bool PhysicsObject::invalidPos() const {
-	for (Coord x = xtr.c1; x <= xtr.c2; ++x) {
-		for (Coord y = ytr.c1; y <= ytr.c2; ++y) {
-			if (!map.getTileAt(Position(x,y)).isEmpty()) return true;
+	for (tcoord x = xtr.c1; x <= xtr.c2; ++x) {
+		for (tcoord y = ytr.c1; y <= ytr.c2; ++y) {
+			if (!map.getTileAt(TPosition(x,y)).isEmpty()) return true;
 		}
 	}
 	return false;
 }
 
-PhysicsObject::TileRange PhysicsObject::getTileRange(Coord pos, Coord size) const {
+PhysicsObject::TileRange PhysicsObject::getTileRange(mcoord pos, mcoord size) const {
 	TileRange ret;
 	ret.c1 = Map::posToTile(pos);
 	ret.c2 = Map::posToTile(pos + size-1);
