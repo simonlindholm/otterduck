@@ -2,7 +2,7 @@ The Cracking Good Adventures of Otter and Duck
 ==============================================
 
 A cooperative 2D platformer featuring Otter and Duck.
-See http://piratepad.net/otterduck for more information about the project.
+See [http://piratepad.net/otterduck](http://piratepad.net/otterduck) for more information about the project.
 
 Building/running
 ----------------
