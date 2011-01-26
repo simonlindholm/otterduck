@@ -3,6 +3,7 @@
 #include <string>
 #include <memory>
 #include "util.h"
+#include "resources.h"
 
 class Map {
 	public:
@@ -17,17 +18,17 @@ class Map {
 				};
 
 				bool empty, deadly;
-				unsigned int image;
+				Resources::Img image;
 
 				// Tiles can only be constructed from Map
-				Tile(unsigned int image, bool empty, bool deadly);
+				Tile(Resources::Img image, bool empty, bool deadly);
 				Tile() = default;
 				Tile& operator=(const Tile& other) = delete;
 				Tile(const Tile& other) = delete;
 
 			public:
 				bool isEmpty() const { return empty; }
-				unsigned int getImage() const { return image; }
+				Resources::Img getImage() const { return image; }
 				bool isDeadly() const { return deadly; }
 		};
 

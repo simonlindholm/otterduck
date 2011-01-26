@@ -26,12 +26,15 @@ Map::Map(const std::string& str) {
 	}
 
 	// Construct the different kinds of tiles
-	tileSorts[Tile::EMPTY] = std::shared_ptr<Tile>(new Tile(1, true, false));
-	tileSorts[Tile::BLOCK] = std::shared_ptr<Tile>(new Tile(0, false, false));
-	tileSorts[Tile::SPIKE] = std::shared_ptr<Tile>(new Tile(2, true, true));
+	tileSorts[Tile::EMPTY] = std::shared_ptr<Tile>(new Tile
+			(Resources::TileEmpty, true, false));
+	tileSorts[Tile::BLOCK] = std::shared_ptr<Tile>(new Tile
+			(Resources::TileBlock, false, false));
+	tileSorts[Tile::SPIKE] = std::shared_ptr<Tile>(new Tile
+			(Resources::TileSpikes, true, true));
 }
 
-Map::Tile::Tile(unsigned int image, bool empty, bool deadly)
+Map::Tile::Tile(Resources::Img image, bool empty, bool deadly)
 	: empty(empty), deadly(deadly), image(image)
 {}
 

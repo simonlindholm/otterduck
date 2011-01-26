@@ -15,93 +15,77 @@ namespace {
 	const scoord minScrollBottom = 215;
 }
 
-UI::Event UI::Event::makeKeydown(int key) {
-	Event ret;
-	ret.type = Keydown;
-	ret.key = key;
-	return ret;
-}
-
-UI::Event UI::Event::makeKeyup(int key) {
-	Event ret;
-	ret.type = Keyup;
-	ret.key = key;
-	return ret;
-}
-
-UI::UI(CL_ResourceManager* res, CL_DisplayWindow* win)
-	: resources(res), window(win), gc(window->get_gc()),
-	otterLeft(gc, "game/otter-walk-left", resources),
-	otterRight(gc, "game/otter-walk-right", resources),
-	otterUpLeft(gc, "game/otter-walk-upleft", resources),
-	otterUpRight(gc, "game/otter-walk-upright", resources),
-	otterDownLeft(gc, "game/otter-walk-downleft", resources),
-	otterDownRight(gc, "game/otter-walk-downright", resources),
-	tileSprite(gc, "game/tiles", resources),
-	soundDeath("game/snd/death", resources),
+UI::UI(ResourceManager* res, sf::RenderWindow* win)
+	: resources(res), window(win),
+	otterAnim(),
+	otterUpLeft(Resources::OtterUpLeft, 4, 140),
+	otterLeft(Resources::OtterLeft, 4, 140),
+	otterDownLeft(Resources::OtterDownLeft, 4, 140),
 	hasPlayedDeathSound(false), scrollx(0), scrolly(0)
 {
-	CL_Font font = CL_Font(gc, "tahoma", 50);
-	restartText.add_text("Press R to restart.", font, CL_Colorf::white);
-	layoutCentered(restartText, 135);
-	font = CL_Font(gc, "tahoma", 100);
-	restartHeader.add_text("You died.", font, CL_Colorf::red);
-	layoutCentered(restartHeader, 45);
+	deathSound.SetBuffer(resources->getSound(Resources::DeathSound));
 
-	otterLeft.set_delay(140);
-	otterRight.set_delay(140);
-	otterUpLeft.set_delay(140);
-	otterUpRight.set_delay(140);
-	otterDownLeft.set_delay(140);
-	otterDownRight.set_delay(140);
+	const sf::Font& font = resources->getFont(Resources::WalterTurncoat);
+	restartText.SetString("Press R to restart.");
+	restartText.SetFont(font);
+	restartText.SetCharacterSize(50);
+	restartText.SetColor(sf::Color(255, 255, 255));
+	centerText(restartText, 140);
+	restartHeader.SetString("You died.");
+	restartHeader.SetFont(font);
+	restartHeader.SetCharacterSize(100);
+	restartHeader.SetColor(sf::Color(255, 0, 0));
+	centerText(restartHeader, 40);
 }
 
-void UI::makeEvent(Event e, const GameState& gs,
+void UI::makeEvent(sf::Event e, const GameState& gs,
 		std::queue<GameState::Event::Type>& eventQueue) const {
-	if (e.type == Event::Keyup) {
-		if (e.key == CL_KEY_UP)
+	if (e.Type == sf::Event::KeyReleased) {
+		if (e.Key.Code == sf::Key::Up)
 			eventQueue.push(GameState::Event::EndLookUp);
-		else if (e.key == CL_KEY_LEFT)
+		else if (e.Key.Code == sf::Key::Left)
 			eventQueue.push(GameState::Event::EndMoveLeft);
-		else if (e.key == CL_KEY_RIGHT)
+		else if (e.Key.Code == sf::Key::Right)
 			eventQueue.push(GameState::Event::EndMoveRight);
 	}
-	else if (e.type == Event::Keydown) {
-		if (e.key == CL_KEY_UP)
+	else if (e.Type == sf::Event::KeyPressed) {
+		if (e.Key.Code == sf::Key::Up)
 			eventQueue.push(GameState::Event::BeginLookUp);
-		else if (e.key == CL_KEY_LEFT)
+		else if (e.Key.Code == sf::Key::Left)
 			eventQueue.push(GameState::Event::BeginMoveLeft);
-		else if (e.key == CL_KEY_RIGHT)
+		else if (e.Key.Code == sf::Key::Right)
 			eventQueue.push(GameState::Event::BeginMoveRight);
-		else if (e.key == CL_KEY_Z)
+		else if (e.Key.Code == sf::Key::Z)
 			eventQueue.push(GameState::Event::Jump);
-		else if (e.key == CL_KEY_R)
+		else if (e.Key.Code == sf::Key::R)
 			eventQueue.push(GameState::Event::Restart);
 	}
 }
 
-void UI::layoutCentered(CL_SpanLayout& layout, int y) {
-	layout.layout(gc, gc.get_width());
-	int centerX = (gc.get_width() - layout.get_size().width) / 2;
-	layout.set_position(CL_Point(centerX, y));
+void UI::centerText(sf::Text& str, int y) {
+	float w = str.GetRect().Width;
+	str.SetY((float)y);
+	str.SetX((window->GetWidth() - w) / 2);
 }
 
-void UI::drawMapSprite(CL_Sprite& spr, MPosition pos) {
+void UI::drawMapSprite(sf::Sprite& spr, MPosition pos) {
 	scoord x = toScreenPos(pos.x) - scrollx;
 	scoord y = toScreenPos(pos.y) - scrolly;
-	spr.draw(gc, (int)x, (int)y);
+	spr.SetPosition((float)x, (float)y);
+	window->Draw(spr);
 }
 
-void UI::drawCenteredMapSprite(CL_Sprite& spr, MPosition pos) {
-	scoord x = toScreenPos(pos.x) - (spr.get_width() / 2) - scrollx;
-	scoord y = toScreenPos(pos.y) - (spr.get_height() / 2) - scrolly;
-	spr.draw(gc, (int)x, (int)y);
+void UI::drawCenteredMapSprite(sf::Sprite& spr, MPosition pos) {
+	scoord x = toScreenPos(pos.x) - ((int)spr.GetSize().x / 2) - scrollx;
+	scoord y = toScreenPos(pos.y) - ((int)spr.GetSize().y / 2) - scrolly;
+	spr.SetPosition((float)x, (float)y);
+	window->Draw(spr);
 }
 
 void UI::adjustScrolling(const Player& pl) {
 	MPosition p = pl.getPosition();
-	const scoord maxx = gc.get_width() - minScrollRight;
-	const scoord maxy = gc.get_height() - minScrollBottom;
+	const scoord maxx = window->GetWidth() - minScrollRight;
+	const scoord maxy = window->GetHeight() - minScrollBottom;
 
 	scoord oldx = toScreenPos(p.x) - scrollx;
 	scoord oldy = toScreenPos(p.y) - scrolly;
@@ -119,48 +103,55 @@ void UI::adjustScrolling(const Player& pl) {
 
 void UI::drawPlayer(const Player& pl) {
 	int pose = pl.getPose();
-	if (pose >= 6) pose -= 6; // temp hack
-	if (pose == 0) otterSprite = otterLeft;
-	else if (pose == 1) otterSprite = otterRight;
-	else if (pose == 2) otterSprite = otterUpLeft;
-	else if (pose == 3) otterSprite = otterUpRight;
-	else if (pose == 4) otterSprite = otterDownLeft;
-	else if (pose == 5) otterSprite = otterDownRight;
+	bool flip = false;
 
-	otterSprite.update();
+	if (pose < 8) {
+		if (pose&1) flip = true;
+		pose &= ~1;
+		if (pose >= 6) pose -= 6; // temp hack
+		if (pose == 0) otterAnim.resetFromDifferent(otterLeft);
+		else if (pose == 2) otterAnim.resetFromDifferent(otterUpLeft);
+		else if (pose == 4) otterAnim.resetFromDifferent(otterDownLeft);
+	}
+
+	sf::Sprite& otterSprite = resources->getImage(otterAnim.getImage());
+	if (flip) otterSprite.FlipX(true);
 	drawCenteredMapSprite(otterSprite, pl.getPosition());
+	if (flip) otterSprite.FlipX(false);
 }
 
 void UI::paint(unsigned int delay, const GameState& gs) {
 	const Map& map = gs.getMap();
 	const Player& pl = gs.getPlayer();
 
-	gc.clear(CL_Colorf::red);
+	window->Clear();
 
 	adjustScrolling(pl);
 
 	tcoord fromx = screenPosToTile(scrollx);
-	tcoord tox = screenPosToTile(scrollx + gc.get_width()-1);
+	tcoord tox = screenPosToTile(scrollx + window->GetWidth()-1);
 	tcoord fromy = screenPosToTile(scrolly);
-	tcoord toy = screenPosToTile(scrolly + gc.get_height()-1);
+	tcoord toy = screenPosToTile(scrolly + window->GetHeight()-1);
 	for (tcoord tiley = fromy; tiley <= toy; ++tiley) {
 		for (tcoord tilex = fromx; tilex <= tox; ++tilex) {
 			TPosition p(tilex, tiley);
 			const Map::Tile& tile = map.getTileAt(p);
-			tileSprite.set_frame(tile.getImage());
+			sf::Sprite& tileSprite = resources->getImage(tile.getImage());
 			drawMapSprite(tileSprite, Map::tileToPos(p));
 		}
 	}
+
+	otterAnim.step(delay);
 
 	gs.drawObjects(*this);
 
 	if (gs.deadPlayer()) {
 		if (!hasPlayedDeathSound) {
-			soundDeath.play();
+			deathSound.Play();
 			hasPlayedDeathSound = true;
 		}
-		restartHeader.draw_layout(gc);
-		restartText.draw_layout(gc);
+		window->Draw(restartHeader);
+		window->Draw(restartText);
 	}
 	else {
 		// Reset the death state

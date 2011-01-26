@@ -1,15 +1,13 @@
 #include <algorithm>
 #include <cassert>
-#include "cl.h"
 #include "gamestate.h"
 
 void GameState::handleEvent(Event::Type e) {
-	if (dead) {
-		if (e == Event::Restart) {
-			*this = *savedState;
-		}
+	if (e == Event::Restart) {
+		// Allow restarts at any time.
+		*this = *savedState;
 	}
-	else {
+	else if (!dead) {
 		if (e == Event::BeginLookUp) pl.beginMove(0);
 		else if (e == Event::EndLookUp) pl.endMove(0);
 		else if (e == Event::BeginMoveLeft) pl.beginMove(1);

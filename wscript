@@ -35,17 +35,14 @@ def configure(conf):
 		conf.env.append_value('CCFLAGS', '-DWINDOWS')
 		conf.env["LMINGW"] = 'mingw32'
 
-	conf.check_cfg(package='clanCore-2.2 clanDisplay-2.2 clanApp-2.2,'
-			'clanGL-2.2 clanSound-2.2 clanMikMod-2.2', uselib_store = 'clanlib',
-			args = ['--cflags', '--libs']);
 	conf.define('VERSION', VERSION)
 	conf.env['VERSION'] = VERSION
 	conf.write_config_header('config.h')
-	conf.env.append_unique('CXXFLAGS', ['-O2', '-g', '-std=c++0x', '-pthread', '-Wall', '-Wextra', '-Wno-unused-parameter'])
-	conf.env.append_unique('LDFLAGS', ['-O2', '-g', '-std=c++0x', '-pthread', '-Wall', '-Wextra'])
+	conf.env.append_unique('CXXFLAGS', ['-O2', '-std=c++0x', '-Wall', '-Wextra', '-Wno-unused-parameter'])
+	conf.env.append_unique('LDFLAGS', ['-O2', '-std=c++0x', '-Wall', '-Wextra'])
 
 def build(bld):
 	bld(features = 'cxx cxxprogram',
 		source = bld.path.ant_glob('src/client/**/*.cpp'),
-		uselib = 'clanlib',
+		lib = ['sfml-graphics', 'sfml-window', 'sfml-system', 'sfml-audio'],
 		target = APPNAME)
