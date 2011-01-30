@@ -8,13 +8,13 @@ void GameState::handleEvent(Event::Type e) {
 		*this = *savedState;
 	}
 	else if (!dead) {
-		if (e == Event::BeginLookUp) pl.beginMove(0);
-		else if (e == Event::EndLookUp) pl.endMove(0);
-		else if (e == Event::BeginMoveLeft) pl.beginMove(1);
-		else if (e == Event::EndMoveLeft) pl.endMove(1);
-		else if (e == Event::BeginMoveRight) pl.beginMove(2);
-		else if (e == Event::EndMoveRight) pl.endMove(2);
-		else if (e == Event::Jump) pl.jump();
+		if (e == Event::BeginLookUp) getPlayer().beginMove(0);
+		else if (e == Event::EndLookUp) getPlayer().endMove(0);
+		else if (e == Event::BeginMoveLeft) getPlayer().beginMove(1);
+		else if (e == Event::EndMoveLeft) getPlayer().endMove(1);
+		else if (e == Event::BeginMoveRight) getPlayer().beginMove(2);
+		else if (e == Event::EndMoveRight) getPlayer().endMove(2);
+		else if (e == Event::Jump) getPlayer().jump();
 	}
 }
 
@@ -23,7 +23,7 @@ void GameState::setSavedState(const GameState* state) {
 }
 
 void GameState::step(unsigned int delay) {
-	pl.step(*this, delay);
+	getPlayer().step(*this, delay);
 }
 
 void GameState::playerDie() {
@@ -31,11 +31,11 @@ void GameState::playerDie() {
 }
 
 void GameState::drawObjects(UI& ui) const {
-	pl.draw(*this, ui);
+	getPlayer().draw(*this, ui);
 }
 
 GameState::GameState(const Map& map)
-	: dead(false), map(map), pl(map)
+	: dead(false), map(map), pl(new Player(map))
 {}
 
 void GameState::swap(GameState& other) {

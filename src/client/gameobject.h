@@ -8,7 +8,7 @@ class RawGameObject;
 class UI;
 
 // An object that appears on the map and can be interacted with, such as
-// a save point or an item.
+// a save point or an item. Has value semantics.
 class GameObject {
 	public:
 		// A player tries to use the object by pressing C on it. Returns true
@@ -23,8 +23,18 @@ class GameObject {
 		void step(GameState& gs, unsigned int delay);
 
 		GameObject(const GameObject& other);
+		GameObject(GameObject&& other);
 		GameObject& operator=(const GameObject& other);
 		void swap(GameObject& other);
+
+		GameObject(RawGameObject* raw);
+
+		// Convert the game object into a known subtype. We assume that no
+		// virtual inheritance will occur, so we can use static_cast for this.
+		template<class T>
+		T& getAs() { return static_cast<T&>(*obj); }
+		template<class T>
+		const T& getAs() const { return static_cast<const T&>(*obj); }
 
 	private:
 		std::shared_ptr<RawGameObject> obj;
@@ -52,6 +62,4 @@ class RawGameObject {
 
 		// Initialize the base part of a game object with a given rect.
 		RawGameObject(Rect rect);
-
-		void swap(RawGameObject& other);
 };

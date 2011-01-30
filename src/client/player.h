@@ -34,8 +34,6 @@ class Player : public PhysicsObject {
 
 		bool isDead() const { return dead; }
 
-		void swap(Player& other);
-
 	private:
 		// Direction of the attempted movement.
 		// For xmov, -1 = left, 1 = right, 0 = no direction.

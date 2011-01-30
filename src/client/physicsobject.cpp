@@ -13,18 +13,6 @@ PhysicsObject::PhysicsObject(const Map& map, Rect rect)
 	ytr = getTileRange(rect.p.y, rect.h);
 }
 
-void PhysicsObject::swap(PhysicsObject& other) {
-	std::swap(ground, other.ground);
-	std::swap(xvel, other.xvel);
-	std::swap(yvel, other.yvel);
-	assert(&map == &other.map);
-	std::swap(xvelRem, other.xvelRem);
-	std::swap(yvelRem, other.yvelRem);
-	std::swap(xtr, other.xtr);
-	std::swap(ytr, other.ytr);
-	RawGameObject::swap(other);
-}
-
 void PhysicsObject::stepPhysics(unsigned int delay) {
 	/**
 	 * The algorithm for moving is as follows:

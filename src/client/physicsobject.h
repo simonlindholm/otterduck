@@ -10,9 +10,6 @@ class PhysicsObject : public RawGameObject {
 		// Construct a physics object operating on a given map.
 		PhysicsObject(const Map& map, Rect rect);
 
-		// Swap two PhysicsObjects.
-		void swap(PhysicsObject& other);
-
 		// Perform all physics/movement. Should be called every frame.
 		void stepPhysics(unsigned int delay);
 

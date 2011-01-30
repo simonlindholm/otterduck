@@ -31,7 +31,9 @@ class GameState {
 		void playerDie();
 		bool deadPlayer() const { return dead; }
 
-		const Player& getPlayer() const { return pl; }
+		const Player& getPlayer() const { return pl.getAs<Player>(); }
+		Player& getPlayer() { return pl.getAs<Player>(); }
+
 		const Map& getMap() const { return map; }
 
 		void drawObjects(UI& ui) const;
@@ -46,5 +48,5 @@ class GameState {
 		const Map& map;
 		const GameState* savedState;
 		std::vector<GameObject> items;
-		Player pl;
+		GameObject pl;
 };

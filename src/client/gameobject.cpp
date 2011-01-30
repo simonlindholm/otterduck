@@ -16,9 +16,18 @@ GameObject::GameObject(const GameObject& other) {
 	if (o) obj = std::shared_ptr<RawGameObject>(o);
 	else obj = other.obj;
 }
+
+GameObject::GameObject(GameObject&& other)
+	: obj(std::move(other.obj))
+{}
+
 void GameObject::swap(GameObject& other) {
 	obj.swap(other.obj);
 }
+
+GameObject::GameObject(RawGameObject* raw)
+	: obj(raw)
+{}
 
 GameObject& GameObject::operator=(const GameObject& other) {
 	GameObject copy(other);
@@ -29,7 +38,3 @@ GameObject& GameObject::operator=(const GameObject& other) {
 RawGameObject::RawGameObject(Rect rect)
 	: rect(rect)
 {}
-
-void RawGameObject::swap(RawGameObject& other) {
-	std::swap(rect, other.rect);
-}

@@ -22,15 +22,6 @@ Player::Player(const Map& map)
 	xmov(0), ymov(0), mov(0), facing(1), dead(false)
 {}
 
-void Player::swap(Player& other) {
-	std::swap(dead, other.dead);
-	std::swap(facing, other.facing);
-	std::swap(ymov, other.ymov);
-	std::swap(xmov, other.xmov);
-	std::swap(mov, other.mov);
-	PhysicsObject::swap(other);
-}
-
 void Player::jump() {
 	if (ground) {
 		yvel = yvelJump;
