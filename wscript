@@ -44,5 +44,5 @@ def configure(conf):
 def build(bld):
 	bld(features = 'cxx cxxprogram',
 		source = bld.path.ant_glob('src/client/**/*.cpp'),
-		lib = ['sfml-graphics', 'sfml-window', 'sfml-system', 'sfml-audio'],
+		lib = ['sfml-graphics', 'sfml-window', 'sfml-system', 'sfml-audio', 'Xrandr'],
 		target = APPNAME)

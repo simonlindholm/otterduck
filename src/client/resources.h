@@ -14,6 +14,7 @@ namespace Resources {
 		TileEmpty = 20,
 		TileBlock,
 		TileSpikes,
+		ItemGravity,
 		ImgEnd
 	};
 	enum Sound {
@@ -42,8 +43,8 @@ class ResourceManager {
 				Resources::Img from, unsigned int num);
 		void set32Handle(int x, int y, sf::Sprite* spr, Resources::Img id);
 		ImgHandle imgRes[Resources::ImgEnd];
-		sf::Image tilesImg, otterImg;
-		sf::Sprite tiles, otter;
+		sf::Image tilesImg, otterImg, itemsImg;
+		sf::Sprite tiles, otter, items;
 
 		sf::SoundBuffer soRes[Resources::SoundEnd];
 		sf::Font fontRes[Resources::FontEnd];

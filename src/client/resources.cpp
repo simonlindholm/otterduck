@@ -22,6 +22,7 @@ void ResourceManager::setAnim32Handle(int x, int y, sf::Sprite* spr,
 ResourceManager::ResourceManager() {
 	if (!tilesImg.LoadFromFile("img/tiles.png") ||
 	    !otterImg.LoadFromFile("img/otter-evil.png") ||
+	    !itemsImg.LoadFromFile("img/items.png") ||
 	    !soRes[DeathSound].LoadFromFile("sound/death.wav") ||
 		!fontRes[WalterTurncoat].LoadFromFile("WalterTurncoat.ttf")) {
 		throw ConfigException(
@@ -30,8 +31,10 @@ ResourceManager::ResourceManager() {
 
 	tilesImg.SetSmooth(false);
 	otterImg.SetSmooth(false);
+	itemsImg.SetSmooth(false);
 	tiles.SetImage(tilesImg);
 	otter.SetImage(otterImg);
+	items.SetImage(itemsImg);
 
 	setAnim32Handle(0, 32, &otter, OtterUp, 4);
 	setAnim32Handle(0, 32, &otter, OtterUpLeft, 4);
@@ -42,6 +45,8 @@ ResourceManager::ResourceManager() {
 	set32Handle(0, 0, &tiles, TileBlock);
 	set32Handle(32, 0, &tiles, TileEmpty);
 	set32Handle(64, 0, &tiles, TileSpikes);
+
+	set32Handle(0, 0, &items, ItemGravity);
 }
 
 sf::Sprite& ResourceManager::getImage(Img id) const {

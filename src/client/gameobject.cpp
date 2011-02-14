@@ -10,6 +10,9 @@ void GameObject::draw(const GameState& gs, UI& ui) const {
 void GameObject::step(GameState& gs, unsigned int delay) {
 	return obj->step(gs, delay);
 }
+bool GameObject::within(Position p) const {
+	return obj->within(p);
+}
 
 GameObject::GameObject(const GameObject& other) {
 	RawGameObject* o = other.obj->clone();
@@ -38,3 +41,8 @@ GameObject& GameObject::operator=(const GameObject& other) {
 RawGameObject::RawGameObject(Rect rect)
 	: rect(rect)
 {}
+
+bool RawGameObject::within(Position p) const {
+	return (rect.x <= p.x && p.x < rect.x + rect.w &&
+			rect.y <= p.y && p.y < rect.y + rect.h);
+}
