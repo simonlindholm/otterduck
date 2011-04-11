@@ -10,7 +10,7 @@ void GameObject::draw(const GameState& gs, UI& ui) const {
 void GameObject::step(GameState& gs, unsigned int delay) {
 	return obj->step(gs, delay);
 }
-bool GameObject::within(Position p) const {
+bool GameObject::within(MPosition p) const {
 	return obj->within(p);
 }
 
@@ -42,7 +42,7 @@ RawGameObject::RawGameObject(Rect rect)
 	: rect(rect)
 {}
 
-bool RawGameObject::within(Position p) const {
-	return (rect.x <= p.x && p.x < rect.x + rect.w &&
-			rect.y <= p.y && p.y < rect.y + rect.h);
+bool RawGameObject::within(MPosition p) const {
+	return (rect.p.x <= p.x && p.x < rect.p.x + rect.w &&
+			rect.p.y <= p.y && p.y < rect.p.y + rect.h);
 }

@@ -23,7 +23,7 @@ class GameObject {
 		void step(GameState& gs, unsigned int delay);
 
 		// Check whether a point is within the object.
-		bool within(Position p) const;
+		bool within(MPosition p) const;
 
 		GameObject(const GameObject& other);
 		GameObject(GameObject&& other);
@@ -51,7 +51,7 @@ class RawGameObject {
 		virtual bool use(GameState& gs, Player& pl) { return false; }
 		virtual void draw(const GameState& gs, UI& ui) const = 0;
 		virtual void step(GameState& gs, unsigned int delay) = 0;
-		virtual bool within(Position p) const;
+		virtual bool within(MPosition p) const;
 
 		// Create a copy of the object, or NULL if no new object is needed
 		// (like for instance checkpoints, which keep no state).
