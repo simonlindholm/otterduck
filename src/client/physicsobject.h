@@ -5,7 +5,7 @@
 class Map;
 
 // Specialized abstract game object with added physics.
-class PhysicsObject : public RawGameObject {
+class PhysicsObject : public GameObject {
 	public:
 		// Construct a physics object operating on a given map.
 		PhysicsObject(const Map* map, Rect rect);

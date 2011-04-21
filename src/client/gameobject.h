@@ -4,13 +4,12 @@
 
 class GameState;
 class Player;
-class RawGameObject;
+class GameObject;
 class UI;
 
-// Abstract class for implementing the polymorphic backend of GameObject.
-// RawGameObject is the base class of every actual game object, and mirrors
-// the interface of GameObject.
-class RawGameObject {
+// Abstract class for an object that appears on the map and can be interacted
+// with, such as a save point or an item.
+class GameObject {
 	public:
 		// A player tries to use the object by pressing C on it. Returns true
 		// if the attempt was valid, or false if it should instead continue
@@ -27,12 +26,12 @@ class RawGameObject {
 		virtual bool within(MPosition p) const;
 
 		// Create a copy of the object.
-		virtual RawGameObject* clone() const = 0;
+		virtual GameObject* clone() const = 0;
 
 		// Assignment from an object known to be of the same dynamic type.
-		virtual void setFrom(RawGameObject& other) = 0;
+		virtual void setFrom(GameObject& other) = 0;
 
-		virtual ~RawGameObject() {}
+		virtual ~GameObject() {}
 
 	protected:
 		// The position and dimensions of the object. Can be changed freely
@@ -40,5 +39,5 @@ class RawGameObject {
 		Rect rect;
 
 		// Initialize the base part of a game object with a given rect.
-		RawGameObject(Rect rect);
+		GameObject(Rect rect);
 };

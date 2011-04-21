@@ -6,15 +6,15 @@
 #include <memory>
 #include "gameobject.h"
 
-class RawGameObject;
+class GameObject;
 
 // A container of GameObjects that can mark a point in history and later
 // return back to it, both in amortized O(1).
 class GOList {
 	private:
 		typedef unsigned char Mask;
-		typedef std::shared_ptr<RawGameObject> T;
-		typedef RawGameObject* Ptr;
+		typedef std::shared_ptr<GameObject> T;
+		typedef GameObject* Ptr;
 		typedef std::list<std::pair<T, Mask>> Li;
 		typedef Li::iterator Lit;
 		typedef Li::const_iterator LCit;
@@ -66,7 +66,7 @@ class GOList {
 				~ChangeLayer();
 		};
 
-		class ConstIter : public std::iterator<std::forward_iterator_tag, RawGameObject> {
+		class ConstIter : public std::iterator<std::forward_iterator_tag, GameObject> {
 			friend class GOList;
 			friend class Iter;
 			private:
@@ -81,11 +81,11 @@ class GOList {
 				ConstIter operator++(int) { ConstIter copy = *this; ++it; advNonNull(); return copy; }
 				bool operator==(const ConstIter& other) const { return it == other.it; }
 				bool operator!=(const ConstIter& other) const { return !(*this == other); }
-				const RawGameObject& operator*() const { return *it->first; }
-				const RawGameObject* operator->() const { return &**this; }
+				const GameObject& operator*() const { return *it->first; }
+				const GameObject* operator->() const { return &**this; }
 		};
 
-		class Iter : public std::iterator<std::forward_iterator_tag, RawGameObject> {
+		class Iter : public std::iterator<std::forward_iterator_tag, GameObject> {
 			friend class GOList;
 			private:
 				Lit it, end;
@@ -101,10 +101,10 @@ class GOList {
 				Iter operator++(int) { Iter copy = *this; ++it; advNonNull(); return copy; }
 				bool operator==(const Iter& other) const { return it == other.it; }
 				bool operator!=(const Iter& other) const { return !(*this == other); }
-				RawGameObject& operator*() { return *it->first; }
-				const RawGameObject& operator*() const { return *it->first; }
-				RawGameObject* operator->() { return &**this; }
-				const RawGameObject* operator->() const { return &**this; }
+				GameObject& operator*() { return *it->first; }
+				const GameObject& operator*() const { return *it->first; }
+				GameObject* operator->() { return &**this; }
+				const GameObject* operator->() const { return &**this; }
 		};
 
 		Li li;

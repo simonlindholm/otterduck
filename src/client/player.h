@@ -14,7 +14,7 @@ class Player : public PhysicsObject {
 		virtual void framePhysics();
 		virtual void die();
 		virtual Player* clone() const;
-		virtual void setFrom(RawGameObject& other);
+		virtual void setFrom(GameObject& other);
 
 		// Jump, if possible.
 		void jump();

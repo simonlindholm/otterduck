@@ -39,16 +39,15 @@ class GameState {
 		void drawObjects(UI& ui) const;
 
 		GameState(const Map* map);
+		GameState& operator=(const GameState& other) = delete;
+		GameState(const GameState& other) = delete;
 
 		void markState();
 		void restoreState();
-		void markDirty(RawGameObject* item);
+		void markDirty(GameObject* item);
 
 	private:
 		const Map* map;
-
-		GameState& operator=(const GameState& other) = delete;
-		GameState(const GameState& other) = delete;
 
 		GOList items;
 		Player* pl;

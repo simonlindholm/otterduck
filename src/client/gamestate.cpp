@@ -41,13 +41,13 @@ GameState::GameState(const Map* map)
 	: map(map)
 {
 	pl = new Player(map);
-	items.push_back(std::shared_ptr<RawGameObject>(pl));
+	items.push_back(std::shared_ptr<GameObject>(pl));
 	items.pushState();
 
 	data.dead = false;
 	savedData = data;
 }
 
-void GameState::markDirty(RawGameObject* item) {
+void GameState::markDirty(GameObject* item) {
 	items.markDirty(item);
 }

@@ -88,7 +88,7 @@ Player* Player::clone() const {
 	return new Player(*this);
 }
 
-void Player::setFrom(RawGameObject& other) {
+void Player::setFrom(GameObject& other) {
 	*this = (Player&)other;
 }
 

@@ -4,7 +4,7 @@
 #include "map.h"
 
 PhysicsObject::PhysicsObject(const Map* map, Rect rect)
-	: RawGameObject(rect), map(map)
+	: GameObject(rect), map(map)
 {
 	ground = false;
 	xvel = yvel = 0;
