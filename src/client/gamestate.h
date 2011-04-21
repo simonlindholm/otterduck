@@ -1,7 +1,9 @@
 #pragma once
 #include <utility>
+#include <unordered_map>
 #include <vector>
 #include "util.h"
+#include "golist.h"
 #include "gameobject.h"
 #include "player.h"
 
@@ -29,24 +31,29 @@ class GameState {
 		void setSavedState(const GameState* state);
 
 		void playerDie();
-		bool deadPlayer() const { return dead; }
+		bool deadPlayer() const { return data.dead; }
 
-		const Player& getPlayer() const { return pl.getAs<Player>(); }
-		Player& getPlayer() { return pl.getAs<Player>(); }
-
-		const Map& getMap() const { return map; }
+		const Map* getMap() const { return map; }
+		const Player& getPlayer() const { return *pl; }
 
 		void drawObjects(UI& ui) const;
 
-		GameState(const Map& map);
-		void swap(GameState& other);
-		GameState& operator=(const GameState& other);
+		GameState(const Map* map);
+
+		void markState();
+		void restoreState();
+		void markDirty(RawGameObject* item);
 
 	private:
-		bool dead;
+		const Map* map;
 
-		const Map& map;
-		const GameState* savedState;
-		std::vector<GameObject> items;
-		GameObject pl;
+		GameState& operator=(const GameState& other) = delete;
+		GameState(const GameState& other) = delete;
+
+		GOList items;
+		Player* pl;
+
+		struct Data {
+			bool dead;
+		} data, savedData;
 };

@@ -3,7 +3,7 @@
 #include "physicsobject.h"
 #include "map.h"
 
-PhysicsObject::PhysicsObject(const Map& map, Rect rect)
+PhysicsObject::PhysicsObject(const Map* map, Rect rect)
 	: RawGameObject(rect), map(map)
 {
 	ground = false;
@@ -114,7 +114,7 @@ void PhysicsObject::stepPhysics(unsigned int delay) {
 			bool dead = false;
 			for (tcoord x = xtr.c1; x <= xtr.c2; ++x) {
 				for (tcoord y = ytr.c1; y <= ytr.c2; ++y) {
-					if (map.getTileAt(TPosition(x,y)).isDeadly()) {
+					if (map->getTileAt(TPosition(x,y)).isDeadly()) {
 						dead = true;
 						break;
 					}
@@ -141,7 +141,7 @@ mcoord PhysicsObject::velPerMs(mcoord vel, mcoord* rem) {
 bool PhysicsObject::calculateGround() const {
 	tcoord y = ytr.c2 + 1;
 	for (tcoord x = xtr.c1; x <= xtr.c2; ++x) {
-		if (!map.getTileAt(TPosition(x, y)).isEmpty()) return true;
+		if (!map->getTileAt(TPosition(x, y)).isEmpty()) return true;
 	}
 	return false;
 }
@@ -149,7 +149,7 @@ bool PhysicsObject::calculateGround() const {
 bool PhysicsObject::invalidPos() const {
 	for (tcoord x = xtr.c1; x <= xtr.c2; ++x) {
 		for (tcoord y = ytr.c1; y <= ytr.c2; ++y) {
-			if (!map.getTileAt(TPosition(x,y)).isEmpty()) return true;
+			if (!map->getTileAt(TPosition(x,y)).isEmpty()) return true;
 		}
 	}
 	return false;

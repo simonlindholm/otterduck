@@ -8,7 +8,7 @@ class Map;
 class PhysicsObject : public RawGameObject {
 	public:
 		// Construct a physics object operating on a given map.
-		PhysicsObject(const Map& map, Rect rect);
+		PhysicsObject(const Map* map, Rect rect);
 
 		// Perform all physics/movement. Should be called every frame.
 		void stepPhysics(unsigned int delay);
@@ -32,7 +32,7 @@ class PhysicsObject : public RawGameObject {
 		mcoord xvel, yvel;
 
 	private:
-		const Map& map;
+		const Map* map;
 
 		// A struct representing a beginning and end of tile indices
 		// that the player occupies.

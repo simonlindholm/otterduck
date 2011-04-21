@@ -17,7 +17,7 @@ namespace {
 	const mcoord playerHeight = 7400;
 }
 
-Player::Player(const Map& map)
+Player::Player(const Map* map)
 	: PhysicsObject(map, Rect(20000, 30000, playerWidth, playerHeight)),
 	xmov(0), ymov(0), mov(0), facing(1), dead(false)
 {}
@@ -86,6 +86,10 @@ void Player::draw(const GameState& gs, UI& ui) const {
 
 Player* Player::clone() const {
 	return new Player(*this);
+}
+
+void Player::setFrom(RawGameObject& other) {
+	*this = (Player&)other;
 }
 
 int Player::getPose() const {

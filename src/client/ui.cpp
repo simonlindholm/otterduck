@@ -121,7 +121,7 @@ void UI::drawPlayer(const Player& pl) {
 }
 
 void UI::paint(unsigned int delay, const GameState& gs) {
-	const Map& map = gs.getMap();
+	const Map* map = gs.getMap();
 	const Player& pl = gs.getPlayer();
 
 	window->Clear();
@@ -135,7 +135,7 @@ void UI::paint(unsigned int delay, const GameState& gs) {
 	for (tcoord tiley = fromy; tiley <= toy; ++tiley) {
 		for (tcoord tilex = fromx; tilex <= tox; ++tilex) {
 			TPosition p(tilex, tiley);
-			const Map::Tile& tile = map.getTileAt(p);
+			const Map::Tile& tile = map->getTileAt(p);
 			sf::Sprite& tileSprite = resources->getImage(tile.getImage());
 			drawMapSprite(tileSprite, Map::tileToPos(p));
 		}

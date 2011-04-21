@@ -7,13 +7,14 @@ class Map;
 // A user-controlled player; either Otter or Duck.
 class Player : public PhysicsObject {
 	public:
-		Player(const Map& map);
+		Player(const Map* map);
 
 		virtual void step(GameState& gs, unsigned int delay);
 		virtual void draw(const GameState& gs, UI& ui) const;
 		virtual void framePhysics();
 		virtual void die();
 		virtual Player* clone() const;
+		virtual void setFrom(RawGameObject& other);
 
 		// Jump, if possible.
 		void jump();

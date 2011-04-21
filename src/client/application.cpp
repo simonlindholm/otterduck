@@ -26,9 +26,7 @@ int main() {
 		// creation of the game object should be handled somewhere in the
 		// state machine.)
 		Map map("maps/test.map");
-		GameState savedGs(map);
-		savedGs.setSavedState(&savedGs);
-		GameState gs = savedGs;
+		GameState gs(&map);
 
 		UI ui(&resources, &window);
 
@@ -49,8 +47,6 @@ int main() {
 		for (;;) {
 			unsigned int ntime = getMs(clock);
 			int dif = ntime - ptime, odif = dif;
-			//int dif = (unsigned int)(window.GetFrameTime() * 1000), odif = dif;
-			//std::clog << dif << std::endl;
 
 			// Poll for new events.
 			while (window.GetEvent(event)) {
