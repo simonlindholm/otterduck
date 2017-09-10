@@ -43,7 +43,7 @@ class ResourceManager {
 				Resources::Img from, unsigned int num);
 		void set32Handle(int x, int y, sf::Sprite* spr, Resources::Img id);
 		ImgHandle imgRes[Resources::ImgEnd];
-		sf::Image tilesImg, otterImg, itemsImg;
+		sf::Texture tilesImg, otterImg, itemsImg;
 		sf::Sprite tiles, otter, items;
 
 		sf::SoundBuffer soRes[Resources::SoundEnd];

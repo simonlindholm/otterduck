@@ -24,6 +24,7 @@ class UI {
 	private:
 		ResourceManager* resources;
 		sf::RenderWindow* window;
+		sf::Vector2f winDimensions;
 
 		Anim otterAnim, otterUpLeft, otterLeft, otterDownLeft;
 
@@ -40,7 +41,7 @@ class UI {
 
 		// Same as above, but the position provided is the center of the
 		// sprite instead of the top-left.
-		void drawCenteredMapSprite(sf::Sprite& spr, MPosition p);
+		void drawCenteredMapSprite(sf::Sprite& spr, MPosition p, bool flipX);
 
 		// Adjust scrolling based on the position of the player, so that
 		// the player does not go out of view.

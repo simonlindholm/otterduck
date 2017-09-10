@@ -6,9 +6,9 @@ void ResourceManager::set32Handle(int x, int y, sf::Sprite* spr,
 		Img id) {
 	ImgHandle ret;
 	ret.spr = spr;
-	ret.subrect.Left = x;
-	ret.subrect.Top = y;
-	ret.subrect.Width = ret.subrect.Height = 32;
+	ret.subrect.left = x;
+	ret.subrect.top = y;
+	ret.subrect.width = ret.subrect.height = 32;
 	imgRes[id] = ret;
 }
 void ResourceManager::setAnim32Handle(int x, int y, sf::Sprite* spr,
@@ -20,21 +20,21 @@ void ResourceManager::setAnim32Handle(int x, int y, sf::Sprite* spr,
 }
 
 ResourceManager::ResourceManager() {
-	if (!tilesImg.LoadFromFile("img/tiles.png") ||
-	    !otterImg.LoadFromFile("img/otter-evil.png") ||
-	    !itemsImg.LoadFromFile("img/items.png") ||
-	    !soRes[DeathSound].LoadFromFile("sound/death.wav") ||
-		!fontRes[WalterTurncoat].LoadFromFile("WalterTurncoat.ttf")) {
+	if (!tilesImg.loadFromFile("img/tiles.png") ||
+	    !otterImg.loadFromFile("img/otter-evil.png") ||
+	    !itemsImg.loadFromFile("img/items.png") ||
+	    !soRes[DeathSound].loadFromFile("sound/death.wav") ||
+		!fontRes[WalterTurncoat].loadFromFile("WalterTurncoat.ttf")) {
 		throw ConfigException(
 				"Failed to load resources. (Are you running from bin?)");
 	}
 
-	tilesImg.SetSmooth(false);
-	otterImg.SetSmooth(false);
-	itemsImg.SetSmooth(false);
-	tiles.SetImage(tilesImg);
-	otter.SetImage(otterImg);
-	items.SetImage(itemsImg);
+	tilesImg.setSmooth(false);
+	otterImg.setSmooth(false);
+	itemsImg.setSmooth(false);
+	tiles.setTexture(tilesImg);
+	otter.setTexture(otterImg);
+	items.setTexture(itemsImg);
 
 	setAnim32Handle(0, 32, &otter, OtterUp, 4);
 	setAnim32Handle(0, 32, &otter, OtterUpLeft, 4);
@@ -51,7 +51,7 @@ ResourceManager::ResourceManager() {
 
 sf::Sprite& ResourceManager::getImage(Img id) const {
 	ImgHandle h = imgRes[id];
-	h.spr->SetSubRect(h.subrect);
+	h.spr->setTextureRect(h.subrect);
 	return *h.spr;
 }
 

@@ -10,7 +10,7 @@ enum {
 };
 
 unsigned int getMs(const sf::Clock& cl) {
-	return (unsigned int)(cl.GetElapsedTime() * 1000);
+	return (unsigned int)(cl.getElapsedTime().asMilliseconds());
 }
 
 int main() {
@@ -31,7 +31,7 @@ int main() {
 		UI ui(&resources, &window);
 
 		std::queue<GameState::Event::Type> eventQueue;
-		window.EnableKeyRepeat(false);
+		window.setKeyRepeatEnabled(false);
 
 		// Run the game loop and relevant logic
 		// (In the future, Application should probably only contain a state
@@ -49,11 +49,11 @@ int main() {
 			int dif = ntime - ptime, odif = dif;
 
 			// Poll for new events.
-			while (window.GetEvent(event)) {
+			while (window.pollEvent(event)) {
 				// Handle quitting locally, because it's simpler that way.
-				if (event.Type == sf::Event::Closed ||
-						(event.Type == sf::Event::KeyPressed &&
-						 event.Key.Code == sf::Key::Escape)) quit = true;
+				if (event.type == sf::Event::Closed ||
+						(event.type == sf::Event::KeyPressed &&
+						 event.key.code == sf::Keyboard::Escape)) quit = true;
 				ui.makeEvent(event, gs, eventQueue);
 			}
 			if (quit) break;
@@ -82,13 +82,13 @@ int main() {
 			ui.paint((unsigned int)odif, gs);
 
 			// Draw everything to screen.
-			window.Display();
+			window.display();
 
 			++fpsCount;
-			if (fpsClock.GetElapsedTime() >= 1) {
+			if (fpsClock.getElapsedTime().asSeconds() >= 1) {
 				// std::cout << "FPS: " << fpsCount << '\r' << std::flush;
 				fpsCount = 0;
-				fpsClock.Reset();
+				fpsClock.restart();
 			}
 		}
 	}
